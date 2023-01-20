@@ -11,4 +11,8 @@ class ClientesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-    
+
+class Cliente_update_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Clientes
+        fields = ['telefone', 'sexo', 'cep', 'cidade', 'estado', 'logradouro']

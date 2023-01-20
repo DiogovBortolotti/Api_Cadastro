@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
+
 #from clientes.api import viewsets
 
 #rota = routers.DefaultRouter()
@@ -25,7 +26,9 @@ from rest_framework import routers
 #    path('', include(rota.urls))
 
 
+
+
 urlpatterns = [
-    path('', include('clientes.urls')),
+    path('v1/', include('clientes.urls')),
     path('admin/', admin.site.urls),
 ]
