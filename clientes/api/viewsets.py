@@ -59,6 +59,7 @@ class ClienteAtualizarViewCliente(generics.RetrieveUpdateAPIView):
     queryset = Clientes.objects.all()
     serializer_class = ClientesSerializer
     
+    
     def patch(self, request,  pk):
         clientes = Clientes.objects.get(id_cliente=pk)
         serializer = ClientesSerializer(instance=clientes, data=request.data,  partial=True)
@@ -91,21 +92,21 @@ class ClienteAtualizarViewCliente(generics.RetrieveUpdateAPIView):
 #procura o filtros mas não atualiza
 class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
+    filterset_fields = ['cpf']
     queryset = Clientes.objects.all()
     serializer_class = ClientesSerializer
     
     
     def patch(self, request,  pk):
-        clientes = Clientes.objects.get(id_cliente=pk)
+        clientes = Clientes.objects.filter(cpf=request.data['cpf'])
         serializer = ClientesSerializer(instance=clientes, data=request.data,  partial=True)
         print(request.data, pk) 
         if serializer.is_valid():
-            data_compare = self.request.data
-            if valida_cep(data_compare['cep'], data_compare['cidade'], data_compare['estado']):
                 serializer.save()
 
         return Response(serializer.data) 
+
+
 
 
 #falta validar se o cep ja existe quando ocorre o update 
