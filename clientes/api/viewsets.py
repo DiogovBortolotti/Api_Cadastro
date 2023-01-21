@@ -1,30 +1,28 @@
+
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, generics, serializers, status, viewsets
-from rest_framework.decorators import action
-from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework import (filters, generics, mixins, serializers, status,
+                            viewsets)
 from rest_framework.response import Response
 
-from clientes.api.serializers import (Cliente_update_Serializer,
-                                      ClientesSerializer)
+from clientes.api.serializers import ClientesSerializer
 from clientes.api.validadores.validador import valida_cep, valida_cpf
 from clientes.models import Clientes
 
 
+#Consulta tudo
 class ClienteViewSet(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
-
     queryset = Clientes.objects.all()
     serializer_class = ClientesSerializer
 
 
-
-
-
-class ClienteBViewSet(generics.CreateAPIView):
+#Cria conforme a regra
+class ClienteViewCriar(generics.CreateAPIView):
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
     queryset = Clientes.objects.all()
     serializer_class = ClientesSerializer
-    
     def post(self, request):
         serializer = ClientesSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -36,45 +34,80 @@ class ClienteBViewSet(generics.CreateAPIView):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-            
-            
-            
-#RetrieveUpdateAPIView
-#generics.ListAPIView
-#RetrieveUpdateDestroyAPIView -- aki funciona
- 
- 
- #deu problema aki --- olhar amanha - Fonte: Não salva o update devido o filtro e o listapiview
-class ClienteUViewSet(generics.ListAPIView, generics.RetrieveUpdateAPIView):
+
+
+#busca pelo id
+class ClienteViewBuscarFiltro(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
     queryset = Clientes.objects.all()
     serializer_class = ClientesSerializer
 
 
-   #ISOLEI SOMENTE PARA TRAZER STATUS -- MAS TEM QUE AJUSTAR
-    def put(self, request):
-        sales = self.filter_queryset(self.get_queryset())
-        serializer = self.serializer_class(instance=sales, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+#busca pelo pk
+class ClienteViewBuscar(generics.RetrieveAPIView):
+    filter_backends = [DjangoFilterBackend]
+    #filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
+    queryset = Clientes.objects.all()
+    serializer_class = ClientesSerializer()
     
-    
-  
 
-#Fica duplicando 
-  #  def patch(self, request, *args, **kwargs): 
-   #     serializer = ClientesSerializer(data=request.data)
-   #     if serializer.is_valid(raise_exception=True):
-   #         data_compare = self.request.data
-   #         if valida_cep(data_compare['cep'], data_compare['cidade'], data_compare['estado']) and valida_cpf(data_compare['cpf']):
-   #             
-   #             #if Clientes.objects.filter(cpf=data_compare['cpf']).exists():
-    #            #    raise serializers.ValidationError('CPF já cadastrado')
-    #            serializer.save()
-    #            return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #    else:
-     #       return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-        
-        
-        
-        
+
+#tudo ok procura pelo id e atualiza -- mas não aplica a regra
+  #RetrieveUpdateDestroyAPIView - ook aki ta realizando
+class ClienteAtualizarViewCliente(generics.RetrieveUpdateAPIView):
+    queryset = Clientes.objects.all()
+    serializer_class = ClientesSerializer
+    
+    def patch(self, request,  pk):
+        clientes = Clientes.objects.get(id_cliente=pk)
+        serializer = ClientesSerializer(instance=clientes, data=request.data,  partial=True)
+        print(request.data, pk) # obs propria >> fiquei trancado aki devido como fazer -- aprendi a depurar com print para poder ver e trazer os dados hr travadas 5hrs
+        if serializer.is_valid():
+            data_compare = self.request.data
+            if valida_cep(data_compare['cep'], data_compare['cidade'], data_compare['estado']):
+                serializer.save()
+
+        return Response(serializer.data) 
+
+
+    
+    def put(self, request,  pk):
+        clientes = Clientes.objects.get(id_cliente=pk)
+        serializer = ClientesSerializer(instance=clientes, data=request.data,  partial=True)
+        print(request.data, pk) 
+        if serializer.is_valid():
+            data_compare = self.request.data
+            if valida_cep(data_compare['cep'], data_compare['cidade'], data_compare['estado']):
+                serializer.save()
+
+        return Response(serializer.data) 
+
+
+
+
+
+
+#procura o filtros mas não atualiza
+class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListCreateAPIView):
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
+    queryset = Clientes.objects.all()
+    serializer_class = ClientesSerializer
+    lookup_field = 'pk'
+    def put(self, request,  pk):
+        pk = self.kwargs.get('cpf')
+        save_allowance = Clientes.objects.all(cpf=pk)
+        data = request.data.get('allowance')
+        serializer = ClientesSerializer(instance=save_allowance,data=data,partial=True)
+        print(request.data, pk) 
+
+        if serializer.is_valid():           
+            allowance_saved=serializer.save()
+            return Response({"success":"Allowance '{}' updated successfully".format(allowance_saved.AllowID)})
+        else:
+            return Response({"fail":"'{}'".format(serializer.errors)})  
+
+
+#falta validar se o cep ja existe quando ocorre o update 
+#falta o pk search no update 

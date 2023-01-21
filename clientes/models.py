@@ -49,7 +49,7 @@ UF =(
 
 class Clientes(models.Model):
     id_cliente = models.BigAutoField(
-        primary_key=True, auto_created=True, editable=False, serialize=False)
+        primary_key=True, auto_created=True)
     nome_completo = models.CharField(max_length=360)
     cpf_regex = RegexValidator(
         regex=r"([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})") #Exemplos 00000000000, 00000000000000, 000.000.000-00, 00.000.000/0000-00, 000000000-00 ou 00000000/0000-00
@@ -63,7 +63,7 @@ class Clientes(models.Model):
     cidade = models.CharField(max_length=250)
     estado = models.CharField(
         max_length=2, choices=UF, blank=False, null=False)
-    logradouro = models.CharField(max_length=250)
+    logradouro = models.CharField(max_length=250, blank=True)
 
     def __str__(self):
         return self.nome_completo
