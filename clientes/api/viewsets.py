@@ -94,19 +94,19 @@ class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListCrea
     filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
     queryset = Clientes.objects.all()
     serializer_class = ClientesSerializer
-    lookup_field = 'pk'
-    def put(self, request,  pk):
-        pk = self.kwargs.get('cpf')
-        save_allowance = Clientes.objects.all(cpf=pk)
-        data = request.data.get('allowance')
-        serializer = ClientesSerializer(instance=save_allowance,data=data,partial=True)
-        print(request.data, pk) 
+    
+    
+    def patch(self, request,  pk):
+        print(pk)
+        clientes = Clientes.objects.get(id_cliente=check.pk)
+        serializer = ClientesSerializer(instance=clientes, data=request.data,  partial=True)
+        print(request.data, pk) # obs propria >> fiquei trancado aki devido como fazer -- aprendi a depurar com print para poder ver e trazer os dados hr travadas 5hrs
+        if serializer.is_valid():
+            data_compare = self.request.data
+            if valida_cep(data_compare['cep'], data_compare['cidade'], data_compare['estado']):
+                serializer.save()
 
-        if serializer.is_valid():           
-            allowance_saved=serializer.save()
-            return Response({"success":"Allowance '{}' updated successfully".format(allowance_saved.AllowID)})
-        else:
-            return Response({"fail":"'{}'".format(serializer.errors)})  
+        return Response(serializer.data) 
 
 
 #falta validar se o cep ja existe quando ocorre o update 

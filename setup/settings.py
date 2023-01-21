@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'clientes',
     'rest_framework',
     'django_filters',
+    'drf_spectacular',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,8 +43,16 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Clientes',
+    'DESCRIPTION': 'Desenvolvido este repositório para criar um CRUD API Simples com alguns validadores  para utilizar, contendo os recursos GET, POST PUT, PATCH podendo a utilização de pk  e de filtros de nome, CPF.',
+    'VERSION': '1.0.0'
+    # OTHER SETTINGS
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
