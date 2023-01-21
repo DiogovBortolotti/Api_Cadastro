@@ -89,7 +89,7 @@ class ClienteAtualizarViewCliente(generics.RetrieveUpdateAPIView):
 
 
 #procura o filtros mas não atualiza
-class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListCreateAPIView):
+class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
     queryset = Clientes.objects.all()
@@ -97,10 +97,9 @@ class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListCrea
     
     
     def patch(self, request,  pk):
-        print(pk)
-        clientes = Clientes.objects.get(id_cliente=check.pk)
+        clientes = Clientes.objects.get(id_cliente=pk)
         serializer = ClientesSerializer(instance=clientes, data=request.data,  partial=True)
-        print(request.data, pk) # obs propria >> fiquei trancado aki devido como fazer -- aprendi a depurar com print para poder ver e trazer os dados hr travadas 5hrs
+        print(request.data, pk) 
         if serializer.is_valid():
             data_compare = self.request.data
             if valida_cep(data_compare['cep'], data_compare['cidade'], data_compare['estado']):
