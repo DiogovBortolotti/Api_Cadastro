@@ -53,7 +53,7 @@ class Clientes(models.Model):
     nome_completo = models.CharField(max_length=360)
     cpf_regex = RegexValidator(
         regex=r"([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})") #Exemplos 00000000000, 00000000000000, 000.000.000-00, 00.000.000/0000-00, 000000000-00 ou 00000000/0000-00
-    cpf = models.CharField(validators=[cpf_regex], max_length=11) # obs:-- não habilitado o unique=True, pois estava dando conflito com a regra do path informando que ja havia, criado regra de get cpf caso ja tenha ele impedir
+    cpf = models.CharField(validators=[cpf_regex], max_length=11) 
     telefone_regex = RegexValidator(regex=r"\d{11}")  # Exemplos válidos: [00]0000-0000
     telefone = models.CharField(
         validators=[telefone_regex], max_length=11)

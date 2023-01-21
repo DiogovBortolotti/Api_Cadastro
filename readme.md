@@ -47,8 +47,7 @@ Caminhos:
 - v1/clientes/buscar/            -- BUSCA CLIENTES COM FILTRO ?cpf=  ?nome_completo=  ?id_cliente=
 - v1/clientes/buscar/<int:pk>    -- BUSCA SOMENTE COM PK
 - v1/clientes/alterar/<int:pk>   -- Altera Cliente com pk
-- v1/clientes/buscare/           -- BUG NO FILTRO PARA ALTERAR
-- v1/clientes/buscare/<int:pk>   -- BUG NO FILTRO PARA ALTERAR
+- v1/clientes/alterar/           -- Altera com o Filtro
 - v1/api/schema/swagger-ui/      -- Documentação Swagger
 
 
@@ -59,7 +58,7 @@ Caminhos:
 
 <p> Dia 19/01 - Começo do projeto (Validadores - Criados e testados)
 <p> Dia 20/01 - Adicionado os validadores e ajustado as regras/ criado as views colocados os filtros 
-<p> Dia 21/01 - Encontrado bug na revisão do update -- o Filtro não habilitando o pk para alteração em relação ao filtro de cpf nome.
+<p> Dia 21/01 - Ajustes de erro de sintaxe dos validadores, revisão e adicionado o Swagger
 
 
 

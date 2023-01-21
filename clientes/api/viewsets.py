@@ -2,6 +2,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (filters, generics, mixins, serializers, status,
                             viewsets)
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from clientes.api.serializers import ClientesSerializer
@@ -36,7 +37,9 @@ class ClienteViewCriar(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
 
-#busca pelo id
+
+
+#busca pelo filtro
 class ClienteViewBuscarFiltro(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
@@ -44,16 +47,14 @@ class ClienteViewBuscarFiltro(generics.ListAPIView):
     serializer_class = ClientesSerializer
 
 
-#busca pelo pk
+    
 class ClienteViewBuscar(generics.RetrieveAPIView):
     filter_backends = [DjangoFilterBackend]
-    #filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
+    filterset_fields = ['id_cliente','cpf', 'nome_completo']
     queryset = Clientes.objects.all()
-    serializer_class = ClientesSerializer()
-    
+    serializer_class = ClientesSerializer
 
-
-#tudo ok procura pelo id e atualiza -- mas não aplica a regra
+#tudo ok procura pelo id e atualiza
   #RetrieveUpdateDestroyAPIView - ook aki ta realizando
   #RetrieveUpdateAPIView o certo
 class ClienteAtualizarViewCliente(generics.RetrieveUpdateAPIView):
@@ -90,16 +91,18 @@ class ClienteAtualizarViewCliente(generics.RetrieveUpdateAPIView):
 
 
 
-#procura o filtros mas não atualiza generics.UpdateAPIView,generics.ListAPIView):
+
+#procura o filtros e lista generics.UpdateAPIView,generics.ListAPIView
 class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['cpf', 'id_cliente', 'nome_completo']
+    filterset_fields = ['id_cliente','cpf', 'nome_completo']
     queryset = Clientes.objects.all()
     serializer_class = ClientesSerializer
     
     
+    
     def put(self, request,  pk):
-        clientes = Clientes.objects.get(id_cliente=pk)
+        clientes = Clientes.objects.get(cpf=pk)
         serializer = ClientesSerializer(instance=clientes, data=request.data,  partial=True)
         print(request.data, pk) 
         if serializer.is_valid():
@@ -124,5 +127,4 @@ class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListAPIV
 
 
 
-#falta validar se o cep ja existe quando ocorre o update 
-#falta o pk search no update 
+

@@ -12,12 +12,9 @@ urlpatterns = [
     path('clientes/cadastrar/', ClienteViewCriar.as_view()), 
     path('clientes/buscar/', ClienteViewBuscarFiltro.as_view()), 
     path('clientes/buscar/<int:pk>', ClienteViewBuscar.as_view()), 
-    path('clientes/alterar/', ClienteAtualizarViewCliente.as_view()), 
+    path('clientes/alterar/', ClienteAtualizarViewClienteFiltro.as_view()), 
     path('clientes/alterar/<int:pk>', ClienteAtualizarViewCliente.as_view()), 
 
-    path('clientes/buscare/', ClienteAtualizarViewClienteFiltro.as_view()), 
-    path('clientes/buscare/<int:pk>', ClienteAtualizarViewClienteFiltro.as_view()),
-    
     #Swagger
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     #Documentação do projeto
