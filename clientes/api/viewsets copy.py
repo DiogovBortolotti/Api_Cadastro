@@ -97,6 +97,18 @@ class ClienteAtualizarViewClienteFiltro(generics.UpdateAPIView,generics.ListAPIV
     queryset = Clientes.objects.all()
     serializer_class = ClientesSerializer
     
+    def get(self, request,  pk):
+        clientes = Clientes.objects.get(id_cliente=pk)
+        serializer = ClientesSerializer(instance=clientes, data=request.data,  partial=True)
+        if serializer.is_valid():
+            data_compare = self.request.data
+            if valida_cep(data_compare['cep'], data_compare['cidade'], data_compare['estado']):
+                serializer.save()
+
+        return Response(serializer.data) 
+
+
+
     
     def put(self, request,  pk):
         clientes = Clientes.objects.get(id_cliente=pk)
