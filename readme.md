@@ -52,8 +52,8 @@ Caminhos:
 
 
 Extras:
-    Adicionado um validador de cpf, caso for testar o cpf colocar um valido recomendo ou gerar pelo https://www.4devs.com.br/gerador_de_cpf.
-    >utiliza-se um calculo para está validação.
+    Adicionado um validador de cpf, caso for testar o cpf colocar um valido recomendo gerar pelo https://www.4devs.com.br/gerador_de_cpf.
+    - utiliza-se um calculo para está validação.
 
 
 ## Diario de Desenvolvimento
